@@ -5,8 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 public class MainField extends JPanel{
-    private PlaneRadar plane;
-    JButton buttonCreate = new JButton("создать");
+    private ITransport plane;
+    JButton buttonCreatePlane = new JButton("создать самолет");
+    JButton buttonCreatePlaneRadar = new JButton("создать самолет с радаром");
     JButton buttonUp = new JButton(new ImageIcon("src/smallUp.png"));
     JButton buttonDown = new JButton(new ImageIcon("src/smallDown.png"));
     JButton buttonLeft = new JButton(new ImageIcon("src/smallLeft.png"));
@@ -33,6 +34,24 @@ public class MainField extends JPanel{
             draw();
         }
     }
+    public class createListener implements  ActionListener{   //реализация интерфейса
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            String actionCommand = event.getActionCommand();
+            Random rnd = new Random();
+            switch (actionCommand){
+                case "create plane":
+                    plane = new Plane(rnd.nextInt(3000) + 1000, rnd.nextInt(2000) + 10000, Color.blue);
+                    break;
+                case "create plane radar":
+                    plane = new PlaneRadar(rnd.nextInt(3000) + 1000, rnd.nextInt(2000) + 10000, Color.blue,
+                            Color.yellow, true, true);
+                    break;
+            }
+            plane.SetPosition(rnd.nextInt(100), rnd.nextInt(100), getWidth(), getHeight());
+            draw();
+        }
+    }
     public void buttonAdd(JButton butt, int x, int y, int width, int heidht) {
         butt.setBounds(x, y, width, heidht);
         add(butt);
@@ -48,22 +67,16 @@ public class MainField extends JPanel{
         buttonDown.setActionCommand("down");
         buttonUp.setActionCommand("up");
         buttonLeft.setActionCommand("left");
-        buttonAdd(buttonCreate, 5, 5, 88, 20);
+        buttonCreatePlane.setActionCommand("create plane");
+        buttonCreatePlaneRadar.setActionCommand("create plane radar");
+        buttonAdd(buttonCreatePlane, 5, 5, 135, 20);
+        buttonAdd(buttonCreatePlaneRadar, 145, 5, 205, 20);
         buttonAdd(buttonRight, 830, 400, 45, 45);
         buttonAdd(buttonDown, 780, 400, 45, 45);
         buttonAdd(buttonUp, 780, 350, 45, 45);
         buttonAdd(buttonLeft, 730, 400, 45, 45);
-        buttonCreate.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Random rnd = new Random();
-                plane = new PlaneRadar();
-                plane.Init(rnd.nextInt(3000) + 1000, rnd.nextInt(2000) + 10000, Color.blue,
-                        Color.yellow, true, true);
-                plane.SetPosition(rnd.nextInt(100), rnd.nextInt(100), getWidth(), getHeight());
-                draw();
-            }
-        });
+        buttonCreatePlane.addActionListener(new createListener());
+        buttonCreatePlaneRadar.addActionListener(new createListener());
         buttonUp.addActionListener(new clickListener());
         buttonDown.addActionListener(new clickListener());
         buttonLeft.addActionListener(new clickListener());
