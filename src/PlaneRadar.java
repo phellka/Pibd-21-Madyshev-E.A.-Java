@@ -51,22 +51,19 @@ public class PlaneRadar extends Plane {
     }
     @Override
     public void DrawTransport(Graphics gr){
-        gr.clearRect(0, 0, 900, 500); //??
-        Graphics2D g2d = (Graphics2D)gr;
-        g2d.setPaint(Color.black);
         super.DrawTransport(gr);
         //двиигатель
         if (hvEngine){
-            g2d.setColor(dopColor);
-            g2d.fillOval(startPosX + planeWidth * 6 / 16, startPosY + planeHeight * 7 / 10, planeHeight/ 5, planeHeight / 5);
-            g2d.fillOval(startPosX + planeWidth * 9 / 16, startPosY + planeHeight * 7 / 10, planeHeight / 5, planeHeight / 5);
-            g2d.fillRect(startPosX + planeWidth * 6 / 16 + planeHeight / 10, startPosY + planeHeight * 7 / 10,
-                    planeWidth * 3 / 16, planeHeight / 5);
+            gr.setColor(dopColor);
+            gr.fillOval(startPosX + planeWidth * 6 / 16, startPosY + planeHeight * 7 / 10, planeHeight * 1 / 5, planeHeight * 1 / 5);
+            gr.fillOval(startPosX + planeWidth * 9 / 16, startPosY + planeHeight * 7 / 10, planeHeight * 1 / 5, planeHeight * 1 / 5);
+            gr.fillRect(startPosX + planeWidth * 6 / 16 + planeHeight * 1 / 10, startPosY + planeHeight * 7 / 10,
+                    planeWidth * 3 / 16, planeHeight * 1 / 5);
         }
         //радар
         if (hvRadar)
         {
-            radars.drawRadars(dopColor, g2d, startPosX, startPosY);
+            radars.drawRadars(dopColor, gr, startPosX, startPosY);
         }
     }
 }
