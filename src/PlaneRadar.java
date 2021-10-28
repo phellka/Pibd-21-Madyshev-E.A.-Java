@@ -42,7 +42,7 @@ public class PlaneRadar extends Plane {
                 break;
         }
         radars.Init(planeWidth, planeHeight);
-        if (hvEngine) {
+        if (hvRadar) {
             radars.setQuantity(rnd.nextInt(5) + 1);
         }
         else{
