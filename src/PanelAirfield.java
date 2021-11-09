@@ -19,13 +19,13 @@ public class PanelAirfield  extends JPanel {
     JTextField textFieldAddAirfield = new JTextField();
     JLabel labelAirfields = new JLabel("Аэропорты");
     JButton buttonSetPlane = new JButton("<html>Припарковать<br>самолет");
-    JButton buttonSetPlaneRadar = new JButton("<html>Припарковать<br>самолет с<br>радаром");
     JButton buttonShowDelPlane = new JButton("Показать");
     JLabel labelGetPlane = new JLabel("Забрать самолет");
     JLabel labelPlace = new JLabel("Место: ");
     JButton buttonGetPlane = new JButton("Забрать");
     JFormattedTextField textFieldGetPlane;
     WindowMovePlane windowMovePlane = new WindowMovePlane();
+    WindowPlaneConfig windowPlaneConfig;
     public class setGetPlaneListener implements ActionListener {   //реализация интерфейса
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -33,23 +33,7 @@ public class PanelAirfield  extends JPanel {
             if (jListBoxAirfields.getSelectedValue() != null) {
                 switch (actionCommand) {
                     case "set plane":
-                        Color planeColor = JColorChooser.showDialog(null, "Choose a color", Color.RED);
-                        var plane = new Plane(100, 1000, planeColor);
-                        if ((airfieldCollection.getAirfield(jListBoxAirfields.getSelectedValue()).plus(plane)) > -1) {
-                            repaint();
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Аэродром переполнен");
-                        }
-                        break;
-                    case "set plane radar":
-                        Color mainColor = JColorChooser.showDialog(null, "Choose a color", Color.RED);
-                        Color dopColor = JColorChooser.showDialog(null, "Choose a color", Color.RED);
-                        var planeRadar = new PlaneRadar(100, 1000, mainColor, dopColor, true, true);
-                        if ((airfieldCollection.getAirfield(jListBoxAirfields.getSelectedValue()).plus(planeRadar)) > -1) {
-                            repaint();
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Аэродром переполнен");
-                        }
+                        configurePlane();
                         break;
                     case "get plane":
                         if (!Objects.equals(textFieldGetPlane.getText(), "")) {
@@ -98,6 +82,17 @@ public class PanelAirfield  extends JPanel {
             }
         }
     }
+    protected void configurePlane(){
+        windowPlaneConfig = new WindowPlaneConfig(this);
+        windowPlaneConfig.setVisible(true);
+    }
+    public void addPlane(Vehicle plane){
+        if ((airfieldCollection.getAirfield(jListBoxAirfields.getSelectedValue()).plus(plane)) > -1) {
+            repaint();
+        } else {
+            JOptionPane.showMessageDialog(null, "Аэродром переполнен");
+        }
+    }
     public class listBoxChangeListener implements ListSelectionListener {
         @Override
         public void valueChanged(ListSelectionEvent e) {
@@ -129,9 +124,6 @@ public class PanelAirfield  extends JPanel {
         buttonSetPlane.setActionCommand("set plane");
         buttonSetPlane.addActionListener(new setGetPlaneListener());
         smthAdd(buttonSetPlane, 765, 255, 110, 35);
-        buttonSetPlaneRadar.setActionCommand("set plane radar");
-        buttonSetPlaneRadar.addActionListener(new setGetPlaneListener());
-        smthAdd(buttonSetPlaneRadar, 765, 300, 110, 45);
         smthAdd(labelGetPlane, 765, 360, 100, 10);
         smthAdd(labelPlace, 765, 380, 100, 10);
         NumberFormat format = NumberFormat.getInstance();
@@ -146,8 +138,6 @@ public class PanelAirfield  extends JPanel {
         smthAdd(buttonShowDelPlane, 765, 420, 110, 20);
     }
     public void ReloadAirfields(){
-        //defListBoxAirfields
-        //jListBoxAirfields
         int index = jListBoxAirfields.getSelectedIndex();
         defListBoxAirfields.clear();
         for (int i = 0; i < airfieldCollection.Keys().size(); i++){
