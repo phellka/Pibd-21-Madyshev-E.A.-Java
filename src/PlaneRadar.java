@@ -49,6 +49,17 @@ public class PlaneRadar extends Plane {
             radars.setQuantity(0);
         }
     }
+    public void setRadars(IRadars radars){
+        this.radars = radars;
+        radars.Init(planeWidth, planeHeight);
+        Random rnd = new Random();
+        if (hvRadar) {
+            radars.setQuantity(rnd.nextInt(5) + 1);
+        }
+        else{
+            radars.setQuantity(0);
+        }
+    }
     @Override
     public void DrawTransport(Graphics gr){
         super.DrawTransport(gr);

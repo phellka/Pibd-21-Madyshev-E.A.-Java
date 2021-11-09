@@ -4,11 +4,6 @@ import java.util.stream.Collectors;
 
 public class AirfieldCollection {
     final Map<String, Airfield<Vehicle, RadarOne>> airfieldStages  = new HashMap<String, Airfield<Vehicle, RadarOne>>();
-    //переделать
-    //переделать
-    //переделать
-    //переделать
-    //переделать
     public ArrayList<String> Keys(){
         return new ArrayList<>(airfieldStages.keySet());
     }
