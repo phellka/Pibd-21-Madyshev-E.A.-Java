@@ -10,13 +10,13 @@ public class PlaneRadar extends Plane {
     public void setDopColor(Color dopColor) {
         this.dopColor = dopColor;
     }
-    public boolean isHvRadar() {
+    public boolean getHvRadar() {
         return hvRadar;
     }
     public void setHvRadar(boolean hvRadar) {
         this.hvRadar = hvRadar;
     }
-    public boolean isHvEngine() {
+    public boolean getHvEngine() {
         return hvEngine;
     }
     public void setHvEngine(boolean hvEngine) {
@@ -86,7 +86,6 @@ public class PlaneRadar extends Plane {
     }
     @Override
     public void DrawTransport(Graphics gr){
-        //gr.clearRect(0, 0, 900, 500); //??
         super.DrawTransport(gr);
         //двиигатель
         if (hvEngine){
@@ -109,8 +108,5 @@ public class PlaneRadar extends Plane {
                 + String.valueOf(dopColor.hashCode()) + String.valueOf(separator) + String.valueOf(hvRadar) +
                 String.valueOf(separator) + String.valueOf(hvEngine) + String.valueOf(separator)
                 + radars;
-        /*return maxSpeed + separator + weight + separator + mainColor.toString()
-                + separator + dopColor.toString() + separator + hvRadar + separator + hvEngine
-                + separator + radars;*/
     }
 }

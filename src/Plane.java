@@ -51,7 +51,6 @@ public class Plane extends Vehicle{
         }
     }
     public void DrawTransport(Graphics gr){
-        //gr.clearRect(0, 0, 900, 500); //??
         gr.setColor(Color.black);
         //корпус
         gr.setColor(mainColor);

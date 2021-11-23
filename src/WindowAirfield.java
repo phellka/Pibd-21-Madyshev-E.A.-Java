@@ -96,4 +96,3 @@ public class WindowAirfield extends JFrame {
         WindowAirfield mW = new WindowAirfield();
     }
 }
-//JOptionPane.showMessageDialog(null, "Введите название аэродрома", "Ошибка", JOptionPane.ERROR_MESSAGE);
