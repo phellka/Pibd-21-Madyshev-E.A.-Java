@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.Objects;
 import java.util.Random;
 
 public class PlaneRadar extends Plane {
@@ -9,13 +10,13 @@ public class PlaneRadar extends Plane {
     public void setDopColor(Color dopColor) {
         this.dopColor = dopColor;
     }
-    public boolean getHvRadar() {
+    public boolean isHvRadar() {
         return hvRadar;
     }
     public void setHvRadar(boolean hvRadar) {
         this.hvRadar = hvRadar;
     }
-    public boolean getHvEngine() {
+    public boolean isHvEngine() {
         return hvEngine;
     }
     public void setHvEngine(boolean hvEngine) {
@@ -24,7 +25,7 @@ public class PlaneRadar extends Plane {
     public Color dopColor;
     public boolean hvRadar;
     public boolean hvEngine;
-    protected PlaneRadar(int maxSpeed, float weight, Color mainColor, Color dopColor, boolean hvRadar, boolean hvEngine){
+    public PlaneRadar(int maxSpeed, int weight, Color mainColor, Color dopColor, boolean hvRadar, boolean hvEngine){
         super(maxSpeed, weight, mainColor);
         this.dopColor = dopColor;
         this.hvEngine = hvEngine;
@@ -49,6 +50,29 @@ public class PlaneRadar extends Plane {
             radars.setQuantity(0);
         }
     }
+    public PlaneRadar(String info){
+        super(info);
+        String[] strs = info.split(String.valueOf(separator));
+        if (strs.length == 8){
+            maxSpeed = Integer.parseInt(strs[0]);
+            weight = Integer.parseInt(strs[1]);
+            mainColor = Color.decode(strs[2]);
+            dopColor = Color.decode(strs[3]);
+            hvRadar = Boolean.parseBoolean(strs[4]);
+            hvEngine = Boolean.parseBoolean(strs[5]);
+            if (Objects.equals(strs[6], "semicircular")){
+                radars = new RadarOne();
+            }
+            if (Objects.equals(strs[6], "circular")){
+                radars = new RadarTwo();
+            }
+            if (Objects.equals(strs[6], "sophisticated")){
+                radars = new RadarThree();
+            }
+            radars.Init(planeWidth, planeHeight);
+            radars.setQuantity(Integer.parseInt(strs[7]));
+        }
+    }
     public void setRadars(IRadars radars){
         this.radars = radars;
         radars.Init(planeWidth, planeHeight);
@@ -62,6 +86,7 @@ public class PlaneRadar extends Plane {
     }
     @Override
     public void DrawTransport(Graphics gr){
+        //gr.clearRect(0, 0, 900, 500); //??
         super.DrawTransport(gr);
         //двиигатель
         if (hvEngine){
@@ -76,5 +101,16 @@ public class PlaneRadar extends Plane {
         {
             radars.drawRadars(dopColor, gr, startPosX, startPosY);
         }
+    }
+    @Override
+    public String toString(){
+        return String.valueOf(maxSpeed) + String.valueOf(separator) + String.valueOf(weight)
+                + String.valueOf(separator) + String.valueOf(mainColor.hashCode()) + String.valueOf(separator)
+                + String.valueOf(dopColor.hashCode()) + String.valueOf(separator) + String.valueOf(hvRadar) +
+                String.valueOf(separator) + String.valueOf(hvEngine) + String.valueOf(separator)
+                + radars;
+        /*return maxSpeed + separator + weight + separator + mainColor.toString()
+                + separator + dopColor.toString() + separator + hvRadar + separator + hvEngine
+                + separator + radars;*/
     }
 }

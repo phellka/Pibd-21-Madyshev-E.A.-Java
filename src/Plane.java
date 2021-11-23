@@ -3,17 +3,26 @@ import java.awt.*;
 public class Plane extends Vehicle{
     protected int planeWidth = 170;
     protected int planeHeight = 80;
-    public Plane(int maxSpeed, float weight, Color mainColor) {
+    protected char separator = ';';
+    public Plane(int maxSpeed, int weight, Color mainColor) {
         super.maxSpeed = maxSpeed;
         super.weight = weight;
         super.mainColor = mainColor;
     }
-    protected Plane(int maxSpeed, float weight, Color mainColor, int planeWidth, int planeHeight) {
+    public Plane(int maxSpeed, int weight, Color mainColor, int planeWidth, int planeHeight) {
         super.maxSpeed = maxSpeed;
         super.weight = weight;
         super.mainColor = mainColor;
         this.planeWidth = planeWidth;
         this.planeHeight = planeHeight;
+    }
+    public Plane(String info){
+        String[] strs = info.split(String.valueOf(separator));
+        if (strs.length == 3){
+            maxSpeed = Integer.parseInt(strs[0]);
+            weight = Integer.parseInt(strs[1]);
+            mainColor = Color.decode(strs[2]);
+        }
     }
     public void MoveTransport(Direction direction)
     {
@@ -42,10 +51,11 @@ public class Plane extends Vehicle{
         }
     }
     public void DrawTransport(Graphics gr){
+        //gr.clearRect(0, 0, 900, 500); //??
         gr.setColor(Color.black);
         //корпус
         gr.setColor(mainColor);
-        gr.fillRect(startPosX + planeHeight * 1 / 5, startPosY + planeHeight * 2 / 5, planeWidth - planeHeight * 2 / 5, planeHeight * 2 / 5);
+        gr.fillRect(startPosX + planeHeight / 5, startPosY + planeHeight * 2 / 5, planeWidth - planeHeight * 2 / 5, planeHeight * 2 / 5);
         gr.fillOval(startPosX, startPosY + planeHeight * 2 / 5, planeHeight * 2 / 5, planeHeight * 2 / 5);
         gr.fillPolygon(new int[]{startPosX + planeWidth - planeHeight / 5, startPosX + planeWidth - planeHeight / 5, startPosX + planeWidth},
                 new int[]{startPosY + planeHeight * 2 / 5, startPosY + planeHeight * 4 / 5, startPosY + planeHeight * 3 / 5}, 3);
@@ -66,5 +76,10 @@ public class Plane extends Vehicle{
         gr.drawOval(startPosX + planeWidth / 4, startPosY + planeHeight * 9 / 10, planeHeight / 10, planeHeight / 10);
         gr.drawLine(startPosX + planeWidth * 3 / 4, startPosY + planeHeight * 4 / 5, startPosX + planeWidth * 3 / 4, startPosY + planeHeight * 9 / 10);
         gr.drawOval(startPosX + planeWidth * 3 / 4 - planeHeight / 20, startPosY + planeHeight * 9 / 10, planeHeight / 10, planeHeight / 10);
+    }
+    @Override
+    public String toString(){
+        return String.valueOf(maxSpeed) + String.valueOf(separator) + String.valueOf(weight)
+                + String.valueOf(separator) + String.valueOf(mainColor.hashCode());
     }
 }

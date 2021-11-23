@@ -5,6 +5,7 @@ import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.text.NumberFormat;
 import java.util.Objects;
 import java.util.Stack;
@@ -161,5 +162,26 @@ public class PanelAirfield  extends JPanel {
     public void paintComponent(Graphics gr){
         super.paintComponent(gr);
         Draw(gr);
+    }
+    public boolean saveAirfieldCollection(File saveFile){
+        return airfieldCollection.saveData(saveFile);
+    }
+    public boolean loadAirfieldCollection(File loadFile){
+        boolean result = airfieldCollection.loadData(loadFile);
+        ReloadAirfields();
+        return result;
+    }
+    public boolean saveAirfield(File saveFile){
+        if (jListBoxAirfields.getSelectedValue() != null) {
+            return airfieldCollection.saveAirfield(saveFile, jListBoxAirfields.getSelectedValue());
+        }
+        else{
+            return false;
+        }
+    }
+    public boolean loadAirfield(File loadFile){
+        boolean result = airfieldCollection.loadAirfield(loadFile);
+        ReloadAirfields();
+        return result;
     }
 }

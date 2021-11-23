@@ -79,4 +79,8 @@ public class Airfield<T extends ITransport, M extends IRadars> {
                     (airfieldHeight) * placeSizeHeight);
         }
     }
+    public void clear(){
+        places.clear();
+        places = new ArrayList<T>();
+    }
 }
