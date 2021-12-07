@@ -1,7 +1,5 @@
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.function.Supplier;
 
 public class Airfield<T extends ITransport, M extends IRadars> {
     private ArrayList<T> places;
@@ -35,24 +33,20 @@ public class Airfield<T extends ITransport, M extends IRadars> {
         pictureWidth = picWidth;
         pictureHeight = picHeight;
     }
-    public int plus(T plane) {
-        if (places.size() < maxCount) {
-            places.add(plane);
-            return places.size() - 1;
+    public int plus(T plane) throws AirfieldOverflowException {
+        if (places.size() >= maxCount) {
+            throw new AirfieldOverflowException();
         }
-        else {
-            return -1;
-        }
+        places.add(plane);
+        return places.size() - 1;
     }
-    public T minus(int index) {
-        if (index > -1 && index < places.size()) {
-            T bufPlane = places.get(index);
-            places.remove(index);
-            return bufPlane;
+    public T minus(int index) throws AirfieldVehicleNotFoundException{
+        if (index <= -1 || index >= places.size()) {
+            throw new AirfieldVehicleNotFoundException(index);
         }
-        else {
-            return null;
-        }
+        T bufPlane = places.get(index);
+        places.remove(index);
+        return bufPlane;
     }
     public boolean more(int count){
         return places.size() > count;

@@ -43,7 +43,7 @@ public class AirfieldCollection {
             return null;
         }
     }
-    public boolean saveData(File saveFile){
+    public void saveData(File saveFile) throws Exception{
         if (saveFile.exists()){
             saveFile.delete();
         }
@@ -65,16 +65,11 @@ public class AirfieldCollection {
                     }
                 }
             }
-            return true;
-        }
-        catch (IOException ex){
-            //System.out.println(ex.getMessage());
-            return false;
         }
     }
-    public boolean loadData(File loadFile){
+    public void loadData(File loadFile) throws Exception {
         if (!loadFile.exists()){
-            return false;
+            throw new FileNotFoundException();
         }
         try (BufferedReader reader = new BufferedReader(new FileReader(loadFile))){
             String line = reader.readLine();
@@ -82,7 +77,7 @@ public class AirfieldCollection {
                 airfieldStages.clear();
             }
             else{
-                return false;
+                throw new FileFormatException();
             }
             Vehicle plane = null;
             String key = "";
@@ -105,19 +100,15 @@ public class AirfieldCollection {
                 }
                 var result = airfieldStages.get(key).plus(plane);
                 if (result == -1) {
-                    return false;
+                    throw new AirfieldOverflowException();
                 }
             }
-            return true;
-        }
-        catch(IOException ex){
-            return false;
         }
     }
 
-    public boolean saveAirfield(File saveFile, String key) {
+    public void saveAirfield(File saveFile, String key) throws Exception{
         if (!airfieldStages.containsKey(key)){
-            return false;
+            throw new AirfieldNotFoundException();
         }
         if (saveFile.exists()){
             saveFile.delete();
@@ -137,22 +128,17 @@ public class AirfieldCollection {
                     writer.write(plane + System.lineSeparator());
                 }
             }
-            return true;
-        }
-        catch (IOException ex){
-            //System.out.println(ex.getMessage());
-            return false;
         }
     }
 
-    public boolean loadAirfield(File loadFile) {
+    public void loadAirfield(File loadFile) throws Exception {
         if (!loadFile.exists()){
-            return false;
+            throw new FileNotFoundException();
         }
         try (BufferedReader reader = new BufferedReader(new FileReader(loadFile))){
             String line = reader.readLine();
             if (!line.contains("Airfield" + String.valueOf(separator))){
-                return false;
+                throw new FileFormatException();
             }
             else{
                 String key = line.split(String.valueOf(separator))[1];
@@ -172,14 +158,10 @@ public class AirfieldCollection {
                     }
                     var result = airfieldStages.get(key).plus(plane);
                     if (result == -1) {
-                        return false;
+                        throw new StackOverflowError("Не удалось загрузить самолет на аэродром");
                     }
                 }
             }
-            return true;
-        }
-        catch(IOException ex){
-            return false;
         }
     }
 }
