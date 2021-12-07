@@ -139,7 +139,6 @@ public class AirfieldCollection {
                 String key = line.split(String.valueOf(separator))[1];
                 if (airfieldStages.containsKey(key)){
                     airfieldStages.get(key).clear();
-                    //airfieldStages.remove(key);
                 }
                 airfieldStages.put(key, new Airfield<Vehicle, RadarOne>(pictureWidth, pictureHeight));
                 Vehicle plane = null;
