@@ -1,8 +1,9 @@
 import java.awt.*;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Random;
 
-public class PlaneRadar extends Plane {
+public class PlaneRadar extends Plane implements Comparable<Object>, Iterable<String>, Iterator<String> {
     private IRadars radars;
     public Color getDopColor() {
         return dopColor;
@@ -108,5 +109,91 @@ public class PlaneRadar extends Plane {
                 + String.valueOf(dopColor.hashCode()) + String.valueOf(separator) + String.valueOf(hvRadar) +
                 String.valueOf(separator) + String.valueOf(hvEngine) + String.valueOf(separator)
                 + radars;
+    }
+    public boolean equals(PlaneRadar other) {
+        if (other == null) {
+            return false;
+        }
+        if (other.getClass() != PlaneRadar.class) {
+            return false;
+        }
+        if (maxSpeed != other.maxSpeed) {
+            return false;
+        }
+        if (weight != other.weight) {
+            return false;
+        }
+        if (mainColor != other.mainColor) {
+            return false;
+        }
+        if (dopColor != other.dopColor) {
+            return false;
+        }
+        if (hvEngine != other.hvEngine) {
+            return false;
+        }
+        if (hvRadar != other.hvRadar) {
+            return false;
+        }
+        if (radars.getClass() != other.radars.getClass()){
+            return false;
+        }
+        return true;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj.getClass() != PlaneRadar.class){
+            return false;
+        }
+        else {
+            return equals((PlaneRadar)obj);
+        }
+    }
+    @Override
+    public int compareTo(Object obj) {
+        if (obj == null) {
+            return -1;
+        }
+        if (obj.getClass() != Plane.class) {
+            return -1;
+        }
+        PlaneRadar other = (PlaneRadar) obj;
+        if (maxSpeed != other.maxSpeed) {
+            return Integer.compare(maxSpeed, other.maxSpeed);
+        }
+        if (weight != other.weight) {
+            return Integer.compare(weight, other.weight);
+        }
+        if (mainColor != other.mainColor) {
+            return Integer.compare(mainColor.hashCode(), other.mainColor.hashCode());
+        }if (dopColor != other.dopColor) {
+            return Integer.compare(dopColor.hashCode(), other.dopColor.hashCode());
+        }
+        if (hvEngine != other.hvEngine) {
+            return Boolean.compare(hvEngine, other.hvEngine);
+        }
+        if (hvRadar != other.hvRadar) {
+            return Boolean.compare(hvRadar, other.hvRadar);
+        }
+        return 0;
+    }
+    private int count = 0;
+    public boolean hasNext(){
+        if (count < toString().split(String.valueOf(separator)).length){
+            return true;
+        }
+        return false;
+    }
+    public String next(){
+        count += 1;
+        return toString().split(String.valueOf(separator))[count - 1];
+    }
+    public void remove(){}
+    public Iterator<String> iterator(){
+        count = 0;
+        return this;
     }
 }

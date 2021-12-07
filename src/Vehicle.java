@@ -15,7 +15,7 @@ public abstract class Vehicle implements ITransport{
     public float getWeight() {
         return weight;
     }
-    protected void setWeight(float weight) {
+    protected void setWeight(int weight) {
         this.weight = weight;
     }
     public Color getMainColor() {
@@ -25,7 +25,7 @@ public abstract class Vehicle implements ITransport{
         this.mainColor = mainColor;
     }
     public int maxSpeed;
-    public float weight;
+    public int weight;
     public Color mainColor;
     public void SetPosition(int x, int y, int width, int height) {
         startPosX = x;

@@ -1,6 +1,7 @@
 import java.awt.*;
+import java.util.Iterator;
 
-public class Plane extends Vehicle{
+public class Plane extends Vehicle implements Comparable<Object>, Iterable<String>, Iterator<String> {
     protected int planeWidth = 170;
     protected int planeHeight = 80;
     protected char separator = ';';
@@ -80,5 +81,71 @@ public class Plane extends Vehicle{
     public String toString(){
         return String.valueOf(maxSpeed) + String.valueOf(separator) + String.valueOf(weight)
                 + String.valueOf(separator) + String.valueOf(mainColor.hashCode());
+    }
+    public boolean equals(Plane other) {
+        if (other == null) {
+            return false;
+        }
+        if (other.getClass() != Plane.class) {
+            return false;
+        }
+        if (maxSpeed != other.maxSpeed) {
+            return false;
+        }
+        if (weight != other.weight) {
+            return false;
+        }
+        if (mainColor != other.mainColor) {
+            return false;
+        }
+        return true;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj.getClass() != Plane.class) {
+            return false;
+        }
+        else {
+            return equals((Plane)obj);
+        }
+    }
+    @Override
+    public int compareTo(Object obj) {
+        if (obj == null) {
+            return -1;
+        }
+        if (obj.getClass() != Plane.class) {
+            return -1;
+        }
+        Plane other = (Plane) obj;
+        if (maxSpeed != other.maxSpeed) {
+            return Integer.compare(maxSpeed, other.maxSpeed);
+        }
+        if (weight != other.weight) {
+            return Integer.compare(weight, other.weight);
+        }
+        if (mainColor != other.mainColor) {
+            return Integer.compare(mainColor.hashCode(), other.mainColor.hashCode());
+        }
+        return 0;
+    }
+    private int count = 0;
+    public boolean hasNext(){
+        if (count < toString().split(String.valueOf(separator)).length){
+            return true;
+        }
+        return false;
+    }
+    public String next(){
+        count += 1;
+        return toString().split(String.valueOf(separator))[count - 1];
+    }
+    public void remove(){}
+    public Iterator<String> iterator(){
+        count = 0;
+        return this;
     }
 }

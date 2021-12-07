@@ -30,6 +30,7 @@ public class PanelAirfield  extends JPanel {
     WindowMovePlane windowMovePlane = new WindowMovePlane();
     WindowPlaneConfig windowPlaneConfig;
     Logger logger;
+    JButton buttonSort = new JButton("Сортировать");
     public class setGetPlaneListener implements ActionListener {   //реализация интерфейса
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -116,6 +117,10 @@ public class PanelAirfield  extends JPanel {
             logger.warn(ex.toString());
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Переполнение", JOptionPane.ERROR_MESSAGE);
         }
+        catch(AirfieldAlreadyHaveException ex){
+            logger.warn(ex.toString());
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Дублирование", JOptionPane.ERROR_MESSAGE);
+        }
         catch(Exception ex){
             logger.fatal(ex.toString());
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Неизвестная ошибка", JOptionPane.ERROR_MESSAGE);
@@ -168,6 +173,17 @@ public class PanelAirfield  extends JPanel {
         smthAdd(buttonGetPlane, 765, 395, 110, 20);
         buttonShowDelPlane.addActionListener(new showDelPlaneListener());
         smthAdd(buttonShowDelPlane, 765, 420, 110, 20);
+        smthAdd(buttonSort, 765, 325, 110, 20);
+        buttonSort.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (jListBoxAirfields.getSelectedValue() != null){
+                    airfieldCollection.getAirfield(jListBoxAirfields.getSelectedValue()).sort();
+                    logger.info("Сортировка уровней");
+                    repaint();
+                }
+            }
+        });
     }
     public void ReloadAirfields(){
         int index = jListBoxAirfields.getSelectedIndex();
