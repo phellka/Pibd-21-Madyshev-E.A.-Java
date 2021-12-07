@@ -31,14 +31,7 @@ public class WindowAirfield extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (jFileChooser.showDialog(null, "Сохранить в файл")
                         == JFileChooser.APPROVE_OPTION) {
-                    if (panelAirfield.saveAirfieldCollection(jFileChooser.getSelectedFile())){
-                        JOptionPane.showMessageDialog(null, "Сохранение прошло успешно",
-                                "Результат", JOptionPane.WARNING_MESSAGE);
-                    }
-                    else{
-                        JOptionPane.showMessageDialog(null, "Не сохранилось",
-                                "Результат", JOptionPane.ERROR_MESSAGE);
-                    }
+                    panelAirfield.saveAirfieldCollection(jFileChooser.getSelectedFile());
                 }
             }
         });
@@ -47,14 +40,7 @@ public class WindowAirfield extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (jFileChooser.showDialog(null, "Загрузить из файла")
                         == JFileChooser.APPROVE_OPTION) {
-                    if (panelAirfield.loadAirfieldCollection(jFileChooser.getSelectedFile())){
-                        JOptionPane.showMessageDialog(null, "Загрузили",
-                                "Результат", JOptionPane.WARNING_MESSAGE);
-                    }
-                    else{
-                        JOptionPane.showMessageDialog(null, "Не загрузили",
-                                "Результат", JOptionPane.ERROR_MESSAGE);
-                    }
+                    panelAirfield.loadAirfieldCollection(jFileChooser.getSelectedFile());
                 }
             }
         });
@@ -63,14 +49,7 @@ public class WindowAirfield extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (jFileChooser.showDialog(null, "Сохранить в файл")
                         == JFileChooser.APPROVE_OPTION) {
-                    if (panelAirfield.saveAirfield(jFileChooser.getSelectedFile())){
-                        JOptionPane.showMessageDialog(null, "Сохранение прошло успешно",
-                                "Результат", JOptionPane.WARNING_MESSAGE);
-                    }
-                    else{
-                        JOptionPane.showMessageDialog(null, "Не сохранилось",
-                                "Результат", JOptionPane.ERROR_MESSAGE);
-                    }
+                    panelAirfield.saveAirfield(jFileChooser.getSelectedFile());
                 }
             }
         });
@@ -79,14 +58,7 @@ public class WindowAirfield extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (jFileChooser.showDialog(null, "Загрузить из файла")
                         == JFileChooser.APPROVE_OPTION) {
-                    if (panelAirfield.loadAirfield(jFileChooser.getSelectedFile())){
-                        JOptionPane.showMessageDialog(null, "Загрузили",
-                                "Результат", JOptionPane.WARNING_MESSAGE);
-                    }
-                    else{
-                        JOptionPane.showMessageDialog(null, "Не загрузили",
-                                "Результат", JOptionPane.ERROR_MESSAGE);
-                    }
+                    panelAirfield.loadAirfield(jFileChooser.getSelectedFile());
                 }
             }
         });

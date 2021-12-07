@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%-5level %m (дата - %d{dd-MM-yyyy})%n"/>
+        </Console>
+        <SMTP name="Mail" subject="Error" to=""
+              from="" smtpHost="smtp.gmail.com" smtpPort="465"
+              bufferSize="50" smtpPassword="" ignoreExceptions="flase"
+              smtpUsername="" smtpProtocol="smtps">
+            <PatternLayout pattern="%-5level %m (дата - %d{dd-MM-yyyy})%n"/>
+        </SMTP>
+        <File name="LogFile" fileName="all.log" append="true">
+            <PatternLayout pattern="%-5level %m (дата - %d{dd-MM-yyyy})%n"/>
+            <ThresholdFilter level="warn"  onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+            <ThresholdFilter level="fatal" onMatch="DENY" onMismatch="NEUTRAL"/>
+            <ThresholdFilter level="info"  onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="LogFile" level = "info"/>
+            <AppenderRef ref="Mail" level = "fatal"/>
+        </Root>
+    </Loggers>
+</Configuration>

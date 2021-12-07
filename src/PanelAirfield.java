@@ -9,6 +9,8 @@ import java.io.File;
 import java.text.NumberFormat;
 import java.util.Objects;
 import java.util.Stack;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PanelAirfield  extends JPanel {
     private Stack<Vehicle> stackAirfieldDelPlane = new Stack<Vehicle>();
@@ -27,6 +29,7 @@ public class PanelAirfield  extends JPanel {
     JFormattedTextField textFieldGetPlane;
     WindowMovePlane windowMovePlane = new WindowMovePlane();
     WindowPlaneConfig windowPlaneConfig;
+    Logger logger;
     public class setGetPlaneListener implements ActionListener {   //реализация интерфейса
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -38,11 +41,22 @@ public class PanelAirfield  extends JPanel {
                         break;
                     case "get plane":
                         if (!Objects.equals(textFieldGetPlane.getText(), "")) {
-                            var takenPlane = airfieldCollection.getAirfield(jListBoxAirfields.getSelectedValue()).minus(Integer.parseInt(textFieldGetPlane.getText()));
-                            if (takenPlane != null) {
-                                stackAirfieldDelPlane.add(takenPlane);
+                            try {
+                                var takenPlane = airfieldCollection.getAirfield(jListBoxAirfields.getSelectedValue()).minus(Integer.parseInt(textFieldGetPlane.getText()));
+                                if (takenPlane != null) {
+                                    stackAirfieldDelPlane.add(takenPlane);
+                                }
+                                repaint();
+                                logger.info("Изъят самолет " + takenPlane + "с места" + jListBoxAirfields.getSelectedValue());
                             }
-                            repaint();
+                            catch(AirfieldVehicleNotFoundException ex){
+                                logger.warn(ex.toString());
+                                JOptionPane.showMessageDialog(null, ex.getMessage(), "Не найден", JOptionPane.ERROR_MESSAGE);
+                            }
+                            catch (Exception ex){
+                                logger.fatal(ex.toString());
+                                JOptionPane.showMessageDialog(null, ex.getMessage(), "Неизвестная ошибка", JOptionPane.ERROR_MESSAGE);
+                            }
                         }
                         break;
                 }
@@ -68,6 +82,7 @@ public class PanelAirfield  extends JPanel {
                         JOptionPane.showMessageDialog(null, "Введите название аэродрома", "Ошибка", JOptionPane.ERROR_MESSAGE);
                     }
                     else{
+                        logger.info("Добавили аэродром " + textFieldAddAirfield.getText());
                         airfieldCollection.AddAirfield(textFieldAddAirfield.getText());
                         ReloadAirfields();
                     }
@@ -76,6 +91,7 @@ public class PanelAirfield  extends JPanel {
                     if (jListBoxAirfields.getSelectedValue() != null){
                         if (JOptionPane.showConfirmDialog(null, "Удалить аэродром " + jListBoxAirfields.getSelectedValue() + "?") == 0){
                             airfieldCollection.DelAirfield(jListBoxAirfields.getSelectedValue());
+                            logger.info("Удалили аэродром" + jListBoxAirfields.getSelectedValue());
                             ReloadAirfields();
                         }
                     }
@@ -88,15 +104,29 @@ public class PanelAirfield  extends JPanel {
         windowPlaneConfig.setVisible(true);
     }
     public void addPlane(Vehicle plane){
-        if ((airfieldCollection.getAirfield(jListBoxAirfields.getSelectedValue()).plus(plane)) > -1) {
-            repaint();
-        } else {
-            JOptionPane.showMessageDialog(null, "Аэродром переполнен");
+        try {
+            if ((airfieldCollection.getAirfield(jListBoxAirfields.getSelectedValue()).plus(plane)) > -1) {
+                logger.info("Добавлен самолет" + plane);
+                repaint();
+            } else {
+                JOptionPane.showMessageDialog(null, "Аэродром переполнен");
+            }
+        }
+        catch(AirfieldOverflowException ex){
+            logger.warn(ex.toString());
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Переполнение", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(Exception ex){
+            logger.fatal(ex.toString());
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Неизвестная ошибка", JOptionPane.ERROR_MESSAGE);
         }
     }
     public class listBoxChangeListener implements ListSelectionListener {
         @Override
         public void valueChanged(ListSelectionEvent e) {
+            if (jListBoxAirfields.getSelectedValue() != null) {
+                logger.info("Перешли на аэродром " + jListBoxAirfields.getSelectedValue());
+            }
             repaint();
         }
     }
@@ -105,6 +135,7 @@ public class PanelAirfield  extends JPanel {
         add(butt);
     }
     public PanelAirfield(){
+        logger = LogManager.getLogger("myLogger");
         airfieldCollection = new AirfieldCollection(900, 500);
         windowMovePlane.setModal(true);
         setBackground(Color.white);
@@ -163,25 +194,94 @@ public class PanelAirfield  extends JPanel {
         super.paintComponent(gr);
         Draw(gr);
     }
-    public boolean saveAirfieldCollection(File saveFile){
-        return airfieldCollection.saveData(saveFile);
-    }
-    public boolean loadAirfieldCollection(File loadFile){
-        boolean result = airfieldCollection.loadData(loadFile);
-        ReloadAirfields();
-        return result;
-    }
-    public boolean saveAirfield(File saveFile){
-        if (jListBoxAirfields.getSelectedValue() != null) {
-            return airfieldCollection.saveAirfield(saveFile, jListBoxAirfields.getSelectedValue());
+    public void saveAirfieldCollection(File saveFile){
+        try {
+            airfieldCollection.saveData(saveFile);
+            JOptionPane.showMessageDialog(null, "Сохранение прошло успешно",
+                    "Результат", JOptionPane.WARNING_MESSAGE);
+            logger.info("Сохранено в файл " + saveFile);
         }
-        else{
-            return false;
+        catch(Exception ex){
+            logger.fatal(ex.toString());
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Неизвестная ошибка при сохранении", JOptionPane.ERROR_MESSAGE);
         }
     }
-    public boolean loadAirfield(File loadFile){
-        boolean result = airfieldCollection.loadAirfield(loadFile);
-        ReloadAirfields();
-        return result;
+    public void loadAirfieldCollection(File loadFile){
+        try {
+            airfieldCollection.loadData(loadFile);
+            JOptionPane.showMessageDialog(null, "Загрузили",
+                    "Результат", JOptionPane.WARNING_MESSAGE);
+            logger.info("Загружено из файла " + loadFile);
+        }
+        catch (FileFormatException ex) {
+            logger.warn(ex.toString());
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Ошибка формата", JOptionPane.ERROR_MESSAGE);
+        }
+        catch (AirfieldOverflowException ex) {
+            logger.error(ex.toString());
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Переполнение при загрузке", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(AirfieldNotFoundException ex){
+            logger.error(ex.toString());
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Не найден файл", JOptionPane.ERROR_MESSAGE);
+        }
+        catch (Exception ex) {
+            logger.fatal(ex.toString());
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Неизвестная ошибка при загрузке", JOptionPane.ERROR_MESSAGE);
+        }
+        finally {
+            ReloadAirfields();
+            repaint();
+        }
+    }
+    public void saveAirfield(File saveFile){
+        try {
+            if (jListBoxAirfields.getSelectedValue() != null) {
+                airfieldCollection.saveAirfield(saveFile, jListBoxAirfields.getSelectedValue());
+                JOptionPane.showMessageDialog(null, "Сохранение прошло успешно",
+                        "Результат", JOptionPane.WARNING_MESSAGE);
+                logger.info("Сохранено в файл " + saveFile);
+            }
+        }
+        catch(AirfieldNotFoundException ex){
+            logger.error(ex.toString());
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Не найден файл", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(Exception ex){
+            logger.fatal(ex.toString());
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Неизвестная ошибка при сохранении", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    public void loadAirfield(File loadFile){
+        try {
+            airfieldCollection.loadAirfield(loadFile);
+            JOptionPane.showMessageDialog(null, "Загрузили",
+                    "Результат", JOptionPane.WARNING_MESSAGE);
+            logger.info("Загружено из файла " + loadFile);
+        }
+        catch (FileFormatException ex) {
+            logger.warn(ex.toString());
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Ошибка формата", JOptionPane.ERROR_MESSAGE);
+        }
+        catch (AirfieldOverflowException ex) {
+            logger.warn(ex.toString());
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Переполнение при загрузке", JOptionPane.ERROR_MESSAGE);
+        }
+        catch (StackOverflowError ex) {
+            logger.error(ex.toString());
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Переполнение при загрузке", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(AirfieldNotFoundException ex){
+            logger.error(ex.toString());
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Не найден файл", JOptionPane.ERROR_MESSAGE);
+        }
+        catch (Exception ex) {
+            logger.fatal(ex.toString());
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Неизвестная ошибка при загрузке", JOptionPane.ERROR_MESSAGE);
+        }
+        finally {
+            ReloadAirfields();
+            repaint();
+        }
     }
 }
