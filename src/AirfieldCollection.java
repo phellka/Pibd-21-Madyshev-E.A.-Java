@@ -52,8 +52,7 @@ public class AirfieldCollection {
             for (int i = 0; i < airfieldStages.size(); ++i){
                 Airfield<Vehicle, RadarOne> airfield = airfieldStages.get(Keys().get(i));
                 writer.write("Airfield" + separator + Keys().get(i) + System.lineSeparator());
-                ITransport plane = null;
-                for (int j = 0; (plane = airfield.getPlane(j)) != null; ++j){
+                for (Vehicle plane : airfield){
                     if (plane != null){
                         if (plane.getClass().getSimpleName().equals("Plane")){
                             writer.write("Plane" + separator);
@@ -107,17 +106,13 @@ public class AirfieldCollection {
     }
 
     public void saveAirfield(File saveFile, String key) throws Exception{
-        if (!airfieldStages.containsKey(key)){
-            throw new AirfieldNotFoundException();
-        }
         if (saveFile.exists()){
             saveFile.delete();
         }
         try(FileWriter writer = new FileWriter(saveFile)){
             Airfield<Vehicle, RadarOne> airfield = airfieldStages.get(key);
             writer.write("Airfield" + separator + key + System.lineSeparator());
-            ITransport plane = null;
-            for (int j = 0; (plane = airfield.getPlane(j)) != null; ++j){
+            for (Vehicle plane : airfield){
                 if (plane != null){
                     if (plane.getClass().getSimpleName().equals("Plane")){
                         writer.write("Plane" + separator);

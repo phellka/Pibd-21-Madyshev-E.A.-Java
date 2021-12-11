@@ -1,7 +1,9 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
 
-public class Airfield<T extends ITransport, M extends IRadars> {
+public class Airfield<T extends ITransport, M extends IRadars> implements Iterable<Vehicle>, Iterator<Vehicle> {
     private ArrayList<T> places;
     private final int maxCount;
     private final int pictureWidth;
@@ -33,9 +35,12 @@ public class Airfield<T extends ITransport, M extends IRadars> {
         pictureWidth = picWidth;
         pictureHeight = picHeight;
     }
-    public int plus(T plane) throws AirfieldOverflowException {
+    public int plus(T plane) throws AirfieldOverflowException, AirfieldAlreadyHaveException {
         if (places.size() >= maxCount) {
             throw new AirfieldOverflowException();
+        }
+        if (places.contains(plane)){
+            throw new AirfieldAlreadyHaveException();
         }
         places.add(plane);
         return places.size() - 1;
@@ -72,6 +77,27 @@ public class Airfield<T extends ITransport, M extends IRadars> {
             gr.drawLine(i * placeSizeWidth, 0, i * placeSizeWidth,
                     (airfieldHeight) * placeSizeHeight);
         }
+    }
+    public void sort(){
+        places.sort((Comparator<T>) new PlaneComparer());
+    }
+    private int count = 0;
+    public boolean hasNext(){
+        if (count < places.size()){
+            return true;
+        }
+        return false;
+    }
+    public Vehicle next(){
+        count += 1;
+        return (Vehicle) getPlane(count - 1);
+    }
+    public void remove(){
+        throw new UnsupportedOperationException();
+    }
+    public Iterator<Vehicle> iterator(){
+        count = 0;
+        return this;
     }
     public void clear(){
         places.clear();
